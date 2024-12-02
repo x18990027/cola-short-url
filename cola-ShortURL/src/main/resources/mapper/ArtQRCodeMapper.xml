@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cola.shortUrl.mapper.ArtQRCodeMapper">
+
+
+    <select id="selUserData" resultType="com.cola.common.core.domain.entity.SysUser">
+        select user_id      as userId,
+               user_name    as userName,
+               qr_order_num as qrOrderNum
+        from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="qrList" resultType="com.cola.shortUrl.domain.vo.ArtQRCodeVo">
+        select id, short_link as link, remark, create_time as createTime
+        from art_qr_code
+        where create_by = #{userId}
+        order by create_time desc
+    </select>
+
+    <select id="selectUserOrderById" resultType="java.lang.Integer">
+        select qr_order_num
+        from sys_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="selByKey" resultType="java.lang.String">
+        select image_url as imageUrl
+        from art_qr_code
+        where url_key = #{urlKey}
+    </select>
+
+    <update id="updateUserOrder">
+        update sys_user
+        set qr_order_num=#{num}
+        where user_id = #{userId}
+    </update>
+
+
+    <insert id="insertArtQRCode" parameterType="com.cola.shortUrl.domain.ArtQrCode"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into art_qr_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="content != null">content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="urlKey != null">url_key,</if>
+            <if test="shortLink != null">short_link,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="content != null">#{content},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="urlKey != null">#{urlKey},</if>
+            <if test="shortLink != null">#{shortLink},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <delete id="delByIds">
+        delete
+        from art_qr_code
+        where create_by = #{userId}
+        and id in
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

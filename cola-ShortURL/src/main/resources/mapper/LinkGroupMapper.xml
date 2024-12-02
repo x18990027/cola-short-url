@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cola.shortUrl.mapper.LinkGroupMapper">
+
+
+    <select id="selectGroupList" parameterType="com.cola.shortUrl.domain.dto.SelGroupDto"
+            resultType="com.cola.shortUrl.domain.vo.LinkGroupVo">
+
+        SELECT
+        m.id,
+        m.group_name AS groupName,
+        m.create_time AS createTime,
+        m.remark,
+        (SELECT COUNT(*) FROM t_short_link WHERE group_id = m.id) AS urlNum
+        FROM
+        link_group m
+        WHERE
+        m.user_id = #{userId}
+        <if test="groupName !=null and groupName!=''">
+            and m.group_name like concat('%', #{groupName}, '%')
+        </if>
+    </select>
+
+
+    <select id="isOneself" resultType="integer">
+        select count(*)
+        from link_group
+        where id = #{groupId}
+          and user_id = #{userId}
+    </select>
+
+
+    <insert id="insertGroup" parameterType="com.cola.shortUrl.domain.LinkGroup"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into link_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">group_name,</if>
+            <if test="remark != null">remark,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">#{groupName},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <delete id="delGroup">
+        delete from link_group
+        where id in
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and user_id=#{userId}
+    </delete>
+
+    <update id="updateGroup" parameterType="com.cola.shortUrl.domain.dto.UpdateLinkGroupDto">
+        update link_group
+        <set>
+            <trim suffixOverrides=",">
+                <if test="groupName !=null ">
+                    group_name =#{groupName,jdbcType=VARCHAR},
+                </if>
+                <if test="remark!=null ">
+                    remark=#{remark,jdbcType=VARCHAR},
+                </if>
+            </trim>
+        </set>
+        where user_id =#{userId}
+        and id =#{id}
+    </update>
+
+
+</mapper>

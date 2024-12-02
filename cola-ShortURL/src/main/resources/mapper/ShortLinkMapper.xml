@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cola.shortUrl.mapper.ShortLinkMapper">
+
+    <select id="selectUserById" resultType="java.util.Date">
+        select member_time as memberTime
+        from sys_user
+        where user_id = #{id}
+    </select>
+
+    <select id="selectById" resultType="com.cola.shortUrl.domain.TShortLink">
+        select id,
+               short_link       as shortLink,
+               domain_key       as domainKey,
+               long_link        as longLink,
+               status,
+               expiry_time      as expiryTime,
+               num_limit        as numLimit,
+               num_limit_link   as numLimitLink,
+               access_password  as accessPassword,
+               user_id          as userId,
+               group_id         as groupId,
+               remark,
+               create_time      as createTime,
+               visits_num       as visitsNum,
+               encode_long_link as encodeLongLink
+        from t_short_link
+        where id = #{id}
+    </select>
+
+
+    <select id="selectByShortLink" resultType="com.cola.shortUrl.domain.TShortLink">
+        select id,
+               short_link       as shortLink,
+               domain_key       as domainKey,
+               long_link        as longLink,
+               encode_long_link as encodeLongLink,
+               status,
+               expiry_time      as expiryTime,
+               ip_limit         as ipLimit,
+               num_limit        as numLimit,
+               num_limit_link   as numLimitLink,
+               access_password  as accessPassword,
+               user_id          as userId,
+               group_id         as groupId,
+               remark,
+               create_time      as createTime,
+               visits_num       as visitsNum,
+               red_status       as redStatus,
+               url_key          as urlKey
+        from t_short_link
+        where url_key = #{urlKey}
+    </select>
+
+    <select id="selectByOneself" resultType="com.cola.shortUrl.domain.TShortLink">
+        select *
+        from t_short_link
+        where url_key = #{urlKey}
+    </select>
+
+
+    <select id="findList" parameterType="com.cola.shortUrl.domain.dto.SearchTShortLinkDto"
+            resultType="com.cola.shortUrl.domain.vo.TShortLinkVo">
+        select m.id,
+        m.short_link as shortLink,
+        m.long_link as longLink,
+        m.group_id as groupId,
+        n.group_name as groupName,
+        m.status,
+        m.ip_limit as ipLimit,
+        m.num_limit as numLimit,
+        m.num_limit_link as numLimitLink,
+        m.access_password as accessPassword,
+        m.remark,
+        m.visits_num as visitsNum,
+        m.expiry_time as expiryTime,
+        m.create_time as createTime,
+        m.red_status as redStatus
+        from t_short_link m
+        left join link_group n on m.group_id = n.id
+        where m.user_id = #{userId}
+
+        <if test="groupId !=null ">and m.group_id =#{groupId}</if>
+        <if test="status !=null ">and m.status =#{status}</if>
+        <if test="shortLink != null and shortLink!=''">and m.short_link like concat('%', #{shortLink}, '%')</if>
+        <if test="longLink != null and longLink!=''">and m.long_link like concat('%', #{longLink}, '%')</if>
+        <if test="startTime !=null and endTime != null">m.create_time between #{startTime} and #{endTime}</if>
+        ORDER BY m.create_time desc
+
+    </select>
+
+
+    <select id="selectGroupByNum" resultType="integer">
+        select count(*)
+        from t_short_link
+        where user_id = #{userId}
+        and group_id in
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="insertShortUrl" parameterType="com.cola.shortUrl.domain.TShortLink"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into t_short_link
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="redStatus != null">red_status,</if>
+            <if test="encodeLongLink != null">encode_long_link,</if>
+            <if test="shortLink != null">short_link,</if>
+            <if test="urlKey != null">url_key,</if>
+            <if test="domainId != null">domain_Id,</if>
+            <if test="longLink != null">long_link,</if>
+            <if test="status != null">status,</if>
+            <if test="ipLimit != null">ip_limit,</if>
+            <if test="numLimit != null">num_limit,</if>
+            <if test="numLimitLink != null">num_limit_link,</if>
+            <if test="accessPassword != null and accessPassword != '' ">access_password,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="remark != null and accessPassword != '' ">remark,</if>
+            <if test="expiryTime != null">expiry_time,</if>
+            <if test="visitsNum !=null">visits_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="redStatus != null">#{redStatus},</if>
+            <if test="encodeLongLink != null">#{encodeLongLink},</if>
+            <if test="shortLink != null">#{shortLink},</if>
+            <if test="urlKey != null">#{urlKey},</if>
+            <if test="domainId != null ">#{domainId},</if>
+            <if test="longLink != null">#{longLink},</if>
+            <if test="status != null">#{status},</if>
+            <if test="ipLimit != null">#{ipLimit},</if>
+            <if test="numLimit != null">#{numLimit},</if>
+            <if test="numLimitLink != null">#{numLimitLink},</if>
+            <if test="accessPassword != null and accessPassword != '' ">#{accessPassword},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="remark != null and accessPassword != '' ">#{remark},</if>
+            <if test="expiryTime != null">#{expiryTime},</if>
+            <if test="visitsNum !=null">#{visitsNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <delete id="delLink">
+        delete
+        from t_short_link
+        where user_id = #{userId}
+        and id in
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <update id="updateLink" parameterType="com.cola.shortUrl.domain.dto.UpdateTShortLinkDto">
+        update t_short_link
+        <set>
+            <trim suffixOverrides=",">
+                encode_long_link=#{encodeLongLink,jdbcType=VARCHAR},
+                <if test="updateTime != null">
+                    update_time=#{updateTime},
+                </if>
+                <if test="longLink != null">
+                    long_link=#{longLink,jdbcType=VARCHAR},
+                </if>
+                    ip_limit=#{ipLimit},
+                    num_limit=#{numLimit},
+                    num_limit_link=#{numLimitLink,jdbcType=VARCHAR},
+                    access_password=#{accessPassword,jdbcType=VARCHAR},
+                <if test="groupId !=null ">
+                    group_id =#{groupId,jdbcType=BIGINT},
+                </if>
+                    remark=#{remark,jdbcType=VARCHAR},
+                    expiry_time=#{expiryTime,jdbcType=DATE},
+                <if test="redStatus != null">
+                    red_status=#{redStatus},
+                </if>
+            </trim>
+        </set>
+        where
+        user_id =#{userId} and id =#{id}
+        <!--        <foreach item="id" index="index" collection="condition.idList" open="(" separator="," close=")">-->
+        <!--            #{id}-->
+        <!--        </foreach>-->
+    </update>
+
+    <update id="updateStatus">
+
+        update t_short_link
+        set status = #{status}
+        where id = #{id}
+          and user_id = #{userId}
+
+    </update>
+
+    <update id="updateNum">
+        update t_short_link
+        set visits_num =#{visitsNum}
+        where id = #{id}
+    </update>
+
+
+</mapper>
