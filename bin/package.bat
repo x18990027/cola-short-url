@@ -1,6 +1,6 @@
 @echo off
 echo.
-echo [信息] 打包Web工程，生成war/jar包文件。
+echo [锟斤拷息] 锟斤拷锟絎eb锟斤拷锟教ｏ拷锟斤拷锟斤拷war/jar锟斤拷锟侥硷拷锟斤拷
 echo.
 
 %~d0
