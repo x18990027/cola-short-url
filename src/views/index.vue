@@ -65,8 +65,8 @@
             size="mini"
             icon="el-icon-cloudy"
             plain
-            @click="goTarget('https://gitee.com/xcx2000/cola')"
-            >访问码云（开源代码）</el-button
+            @click="goTarget('https://github.com/x18990027/cola-short-url')"
+            >开源代码（需要挂梯子访问）</el-button
           >
           <el-button
             size="mini"
