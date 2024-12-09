@@ -32,9 +32,21 @@
           <br />
 
           阿里云服务器折扣区
-          <el-link href="https://www.aliyun.com/minisite/goods?userCode=7jj2nwfb" type="primary" target="_blank"
+          <el-link
+            href="https://www.aliyun.com/minisite/goods?userCode=7jj2nwfb"
+            type="primary"
+            target="_blank"
             >>☛☛点我进入☚☚</el-link
           >
+          <br />
+          部署教程
+          <el-link
+            href="https://docs.qq.com/doc/DSkVSUGlvR2dwQ3Vm"
+            type="primary"
+            target="_blank"
+            >>☛☛点我进入☚☚</el-link
+          >
+
           <!-- &nbsp;&nbsp;&nbsp; 腾讯云服务器秒杀区
           <el-link href="http://txy.ruoyi.vip" type="primary" target="_blank"
             >>☛☛点我进入☚☚</el-link
@@ -44,12 +56,12 @@
           </h4> -->
         </blockquote>
 
-        <hr /> 
+        <hr />
       </el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>可乐短链 </h2>
+        <h2>可乐短链</h2>
         <!-- <p>
           一直想做一款后台管理系统，看了很多优秀的开源项目但是发现没有合适自己的。于是利用空闲休息时间开始自己写一套后台系统。如此有了若依管理系统，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。同时支持移动客户端访问。系统会陆续更新一些实用功能。
         </p> -->
@@ -130,7 +142,11 @@
             <p>
               <i class="el-icon-user-solid"></i> QQ群：
               <!-- <s> 满174951577 </s> -->
-               <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=M6BveNmw3bpOqT8SUmC_yrTgS8e6Qv78&authKey=Nlem1oo%2FmoGd2q5DVqq0WgL6Qx2wVcpTRydgRj621sj7iLYeI3TMuG9WCMeUSd8l&noverify=0&group_code=796145844" target="_blank">796145844</a>
+              <a
+                href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=M6BveNmw3bpOqT8SUmC_yrTgS8e6Qv78&authKey=Nlem1oo%2FmoGd2q5DVqq0WgL6Qx2wVcpTRydgRj621sj7iLYeI3TMuG9WCMeUSd8l&noverify=0&group_code=796145844"
+                target="_blank"
+                >796145844</a
+              >
             </p>
             <p>
               <i class="el-icon-chat-dot-round"></i> 微信：<a
@@ -147,7 +163,7 @@
             </p>
           </div>
         </el-card>
-      <el-card class="update-log">
+        <el-card class="update-log">
           <div slot="header" class="clearfix">
             <span>更新日志</span>
           </div>
@@ -164,20 +180,19 @@
             </el-collapse-item>
           </el-collapse>
         </el-card>
-
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
-   <el-card class="update-log">
+        <el-card class="update-log">
           <div slot="header" class="clearfix">
             <span>开源不易，打赏一下</span>
           </div>
-           <div class="body">
+          <div class="body">
             <img
               src="@/assets/images/sendMoney.jpg"
               alt="donate"
               width="100%"
               height="60%"
-              style="display: block;"
+              style="display: block"
             />
             <!-- <span style="display: inline-block; height: 30px; line-height: 30px"
               >赞赏记录:</span
@@ -191,11 +206,7 @@
             <span>联系我们</span>
           </div>
           <div class="body">
-            <img
-              src="@/assets/images/chat.png"
-              alt="donate"
-              width="100%"
-            />
+            <img src="@/assets/images/chat.png" alt="donate" width="100%" />
             <span style="display: inline-block; height: 30px; line-height: 30px"
               >联系作者提供反馈意见</span
             >
@@ -212,14 +223,14 @@ export default {
   data() {
     return {
       // 版本号
-      version: "1.0.0"
+      version: "1.0.0",
     };
   },
   methods: {
     goTarget(href) {
       window.open(href, "_blank");
-    }
-  }
+    },
+  },
 };
 </script>
 
