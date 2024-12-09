@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d6a96"],{7403:function(p,n,a){p.exports=a.p+"static/img/wxpay.2a3cae79.png"}}]);
