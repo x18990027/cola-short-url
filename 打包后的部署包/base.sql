@@ -637,7 +637,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'cola', 'cola', '00', 'ry@163.com', '15888888888', '1', '/profile/avatar/2024/02/08/QQ图片20240208150805_20240208150855A002.jpg', '$2a$10$6y1bUYsVFj9c1ZlBTzmNl.jN2dxsaFzIMLWXm5DmamvXnL9mXE5Qe', '0', '0', '127.0.0.1', '2024-12-02 19:11:10', 'admin', '2024-01-17 10:23:39', '', '2024-12-02 11:11:09', '管理员', 8, '2024-07-19 18:44:10');
+INSERT INTO `sys_user` VALUES (1, 103, 'cola', 'cola', '00', 'ry@163.com', '15888888888', '1', '/profile/avatar/2024/02/08/QQ图片20240208150805_20240208150855A002.jpg', '$2a$10$SYxpeV1dRj0RfVtdBlU7weGXC37hVTtoh7CSAiPLQQIM/x6AET6Iu', '0', '0', '127.0.0.1', '2024-12-02 19:11:10', 'admin', '2024-01-17 10:23:39', '', '2024-12-02 11:11:09', '管理员', 8, '2024-07-19 18:44:10');
 
 -- ----------------------------
 -- Table structure for sys_user_post

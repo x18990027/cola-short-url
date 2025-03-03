@@ -32,7 +32,6 @@
     <select id="selectByShortLink" resultType="com.cola.shortUrl.domain.TShortLink">
         select id,
                short_link       as shortLink,
-               domain_key       as domainKey,
                long_link        as longLink,
                encode_long_link as encodeLongLink,
                status,
