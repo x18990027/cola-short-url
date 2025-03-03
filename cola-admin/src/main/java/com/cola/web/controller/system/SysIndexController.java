@@ -33,17 +33,25 @@ public class SysIndexController {
     public RedirectView index(HttpServletRequest request) {
 
 
-        // 获取请求的域名（通常通过请求URI和服务器信息）
-        StringBuffer requestURL = request.getRequestURL();
-        String domain = requestURL.toString().replace(request.getRequestURI(), "");
-        if (domain.endsWith("/")) {
-            domain = domain + "ui/home";
-        } else {
-            domain = domain + "/ui/home";
+        // 获取协议
+        String scheme = request.getScheme();
+        // 获取服务器名
+        String serverName = request.getServerName();
+        // 获取服务器端口
+        int serverPort = request.getServerPort();
+
+        // 拼接基础域名
+        StringBuilder domain = new StringBuilder(scheme).append("://").append(serverName);
+        // 仅当端口不是默认端口时才添加端口信息
+        if ((scheme.equals("http") && serverPort != 80) || (scheme.equals("https") && serverPort != 443)) {
+            domain.append(":").append(serverPort);
         }
 
-        RedirectView redirectView = new RedirectView(domain);
-//        // 301永久重定向，避免网络劫持
+        // 拼接最终重定向路径
+        domain.append("/ui/home");
+
+        RedirectView redirectView = new RedirectView(domain.toString());
+        // 302 临时重定向
         redirectView.setStatusCode(HttpStatus.FOUND);
         return redirectView;
     }
