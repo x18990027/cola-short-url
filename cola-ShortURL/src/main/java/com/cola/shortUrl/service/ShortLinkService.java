@@ -7,6 +7,7 @@ import com.cola.shortUrl.domain.dto.EncodeGoDto;
 import com.cola.shortUrl.domain.dto.SearchTShortLinkDto;
 import com.cola.shortUrl.domain.dto.TShortLinkDto;
 import com.cola.shortUrl.domain.dto.UpdateTShortLinkDto;
+import com.cola.shortUrl.domain.vo.StatisticsVo;
 import com.cola.shortUrl.domain.vo.TShortLinkVo;
 import com.cola.shortUrl.domain.vo.UrlStatisticsVo;
 
@@ -35,4 +36,5 @@ public interface ShortLinkService {
 
     String  encodeGo( EncodeGoDto encodeGoDto);
 
+   List<StatisticsVo> getStatisticsList(Long commonIdDto);
 }

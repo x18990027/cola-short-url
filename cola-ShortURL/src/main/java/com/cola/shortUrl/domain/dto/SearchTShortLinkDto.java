@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class SearchTShortLinkDto {
+    private Long Id;
 
     private long userId;
 

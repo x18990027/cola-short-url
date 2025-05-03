@@ -114,3 +114,13 @@ export function delCode(body) {
     data: body
   })
 }
+
+// 获取访问日志
+export function statisticsList(query,body)  {
+  return request({
+    url: '/shortUrl/url/statistics/list',
+    method: 'post',
+    params: query,
+    data: body
+  })
+}

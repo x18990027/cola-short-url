@@ -1,7 +1,6 @@
 <template>
     <div class="app-container">
 
-
         <el-tabs type="card" v-model="reportName" @tab-click="reportClick">
             <el-tab-pane name="report">
                 <span slot="label"><i class="el-icon-s-data"></i>统计大屏</span>
@@ -9,38 +8,9 @@
             <el-tab-pane label="访问历史" name="ipHistory"></el-tab-pane>
         </el-tabs>
 
-        <!-- <div>
-            <el-table v-loading="loading" :data="urlList" @selection-change="handleSelectionChange" v-show="false">
-                <el-table-column type="selection" width="55" align="center" />
-                <el-table-column label="ID" prop="id" width="50" v-if="false" />
-                <el-table-column label="序号" align="center" width="50">
-                    <template slot-scope="scope">
-                        {{ getCurrentIndex(queryParams.pageNum, queryParams.pageSize) + scope.$index }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="ip" prop="shortLink" :show-overflow-tooltip="true" width="200"
-                    v-if="columns[1].visible" />
-                <el-table-column label="地址" prop="longLink" :show-overflow-tooltip="true" width="200"
-                    show-overflow-tooltip v-if="columns[2].visible" />
-                <el-table-column label="设备信息" prop="groupName" width="100" />
-                <el-table-column label="访问时间" align="center" prop="createTime" width="180">
-                    <template slot-scope="scope">
-                        <span>{{ parseTime(scope.row.createTime) }}</span>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
-                :limit.sync="queryParams.pageSize" @pagination="getList" />
-        </div> -->
 
-
-
-
-
-
-        <!-- <el-divider><i class="el-icon-view"></i></el-divider> -->
+        <el-divider><i class="el-icon-view"></i></el-divider>
         <div>
-
             <el-row :gutter="20">
                 <el-col :span="6">
                     <div>
@@ -87,9 +57,8 @@
             </el-row>
         </div>
         <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+
         <div>
-
-
             <div style="display: flex; align-items: center;" v-show="showReport">
                 <p style="margin-left: 7%; font-weight: bold;">流量趋势(点击量)</p>
                 <el-tabs v-model="activeName" style="margin-left: 1%;" type="card" @tab-click="handleClick">
@@ -98,14 +67,10 @@
                     <el-tab-pane label="最近7日" name="third"></el-tab-pane>
                 </el-tabs>
             </div>
-
-
-
-
             <div id="7DaysStatistics" style="width: 1500px;height:400px;" v-show="showReport">
             </div>
         </div>
-        <el-divider v-if="showReport"></el-divider>
+
 
         <div style="display: inline-block;" v-show="showReport">
             <p style="margin-left: 9%; font-weight: bold; ">地区访问量TOP10</p>
@@ -116,12 +81,34 @@
             <div id="main" style="width: 550px; height: 400px; margin-left: 8%;  display: inline-block;"></div>
         </div>
 
+        <div style="width: 100%;" v-show="showList">
+            <el-table v-loading="reportLoading" :data="statisticsAll">
+
+                <el-table-column label="ID" prop="id" width="50" v-if="false" />
+                <el-table-column label="短网址" prop="shortLink" :show-overflow-tooltip="true" width="300" />
+
+                <el-table-column label="IP" prop="ip" width="250" />
+                <el-table-column label="地址" prop="address" width="300" />
+                <el-table-column label="访问设备" prop="terminal" width="200" />
+                <el-table-column label="访问时间" align="center" prop="createTime" width="200">
+                    <template slot-scope="scope">
+                        <span>{{ parseTime(scope.row.createTime) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="" align="center" class-name="small-padding fixed-width">
+                    <template slot-scope="scope">
+                    </template>
+                </el-table-column>
+            </el-table>
+            <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
+                :limit.sync="queryParams.pageSize" @pagination="getList" />
+        </div>
     </div>
 </template>
 
 <script>
 import * as echarts from 'echarts';
-import { getStatistics } from "@/api/shortUrl/url";
+import { getStatistics, statisticsList } from "@/api/shortUrl/url";
 
 export default {
     name: "Dict",
@@ -133,10 +120,11 @@ export default {
                 pageNum: 1,
                 pageSize: 10,
             },
-
-
+            reportLoading: false,
+            statisticsAll: [],
             reportName: "report",
             showReport: true,
+            showList: false,
             //顶部访问统计
             like: true,
             visitsTotal: 0,
@@ -144,6 +132,7 @@ export default {
             todayAddNum: 0,
             ipTotal: 0,
             todayAddIpNum: 0,
+            total: 0,
 
             //7天日期折线图参数
             chartDom: null,
@@ -166,7 +155,10 @@ export default {
             statisticsData: null,
             terminalData: [],
             queryBody: {
-                id: undefined,
+                id: null,
+                shortLink: undefined,
+                status: undefined,
+                groupId: undefined
             },
 
 
@@ -179,8 +171,10 @@ export default {
         const urlId = this.$route.params && this.$route.params.urlId;
         if (urlId !== undefined && urlId != 0) {
             this.queryBody.id = urlId;
+
             this.getData();
         } else {
+
             this.getData();
         }
 
@@ -189,12 +183,26 @@ export default {
         this.initChartsAfterDataLoaded();
     },
     methods: {
+
+        /** 查询统计日志 */
+        getList() {
+            this.reportLoading = true;
+            statisticsList(this.queryParams, this.queryBody).then(response => {
+                this.statisticsAll = response.rows;
+                this.total = response.total;
+                this.reportLoading = false;
+            }).catch(error => {
+                this.reportLoading = false;
+                console.error(error);
+            });
+        },
+
         /** 查询统计数据 */
         getData() {
             this.loading = true;
 
             getStatistics(this.queryBody).then(response => {
-
+                
                 this.statisticsData = response.rows[0];
                 this.todayAddNum = this.statisticsData.todayAddNum;
                 this.visitsTotal = this.statisticsData.visitsTotal;
@@ -228,9 +236,12 @@ export default {
             if (tab.name === "report") {
                 this.reportName = "report";
                 this.showReport = true;
+                this.showList = false;
             } else if (tab.name === "ipHistory") {
                 this.reportName = "report";
                 this.showReport = false;
+                this.getList();
+                this.showList = true;
             }
         }
         ,

@@ -7,6 +7,7 @@ import com.cola.common.core.domain.dto.CommonIdDto;
 import com.cola.common.enums.SystemStateCodeEnum;
 import com.cola.common.exception.ServiceException;
 import com.cola.common.utils.DateUtils;
+import com.cola.common.utils.PageUtils;
 import com.cola.common.utils.SecurityUtils;
 import com.cola.common.utils.bean.BeanUtils;
 import com.cola.shortUrl.domain.DomainManager;
@@ -15,6 +16,7 @@ import com.cola.shortUrl.domain.dto.EncodeGoDto;
 import com.cola.shortUrl.domain.dto.SearchTShortLinkDto;
 import com.cola.shortUrl.domain.dto.TShortLinkDto;
 import com.cola.shortUrl.domain.dto.UpdateTShortLinkDto;
+import com.cola.shortUrl.domain.vo.StatisticsVo;
 import com.cola.shortUrl.domain.vo.TShortLinkVo;
 import com.cola.shortUrl.domain.vo.UrlStatisticsVo;
 import com.cola.shortUrl.mapper.DomainManagerMapper;
@@ -377,6 +379,13 @@ public class ShortLinkServiceImpl implements ShortLinkService {
             throw new ServiceException("密码错误！");
         }
 
+    }
+
+    @Override
+    public List<StatisticsVo> getStatisticsList(Long commonIdDto) {
+
+        List<StatisticsVo> statisticsList = linkAccessStatisticsMapper.getStatisticsList(commonIdDto);
+        return statisticsList ;
     }
 
 

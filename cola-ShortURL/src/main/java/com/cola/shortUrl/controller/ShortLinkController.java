@@ -10,7 +10,9 @@ import com.cola.common.core.page.TableDataInfo;
 import com.cola.common.enums.SystemStateCodeEnum;
 import com.cola.common.exception.ServiceException;
 import com.cola.common.utils.SecurityUtils;
+import com.cola.common.utils.ServletUtils;
 import com.cola.shortUrl.domain.dto.*;
+import com.cola.shortUrl.domain.vo.StatisticsVo;
 import com.cola.shortUrl.domain.vo.TShortLinkVo;
 import com.cola.shortUrl.domain.vo.UrlStatisticsVo;
 import com.cola.shortUrl.service.ShortLinkService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,13 +85,22 @@ public class ShortLinkController extends BaseController {
     }
 
 
-
     @PostMapping(value = "/statistics")
     public TableDataInfo statistics(@RequestBody CommonIdDto commonIdDto) {
 
         UrlStatisticsVo urlStatisticsVo = shortLinkService.urlStatistics(commonIdDto);
         return getDataTable(SystemStateCodeEnum.SUCCESS, urlStatisticsVo);
     }
+
+
+    @PostMapping(value = "/statistics/list")
+    public TableDataInfo statisticsList(@RequestBody CommonIdDto commonIdDto) {
+
+        startPage();
+        List<StatisticsVo> statisticsList = shortLinkService.getStatisticsList(commonIdDto.getId());
+        return getDataTable(SystemStateCodeEnum.SUCCESS, statisticsList);
+    }
+
 
     @PostMapping(value = "/encodeGo")
     @Anonymous
@@ -114,9 +126,6 @@ public class ShortLinkController extends BaseController {
 
         return success(url);
     }
-
-
-
 
 
 }

@@ -49,7 +49,8 @@ public class OpenShortLinkController extends BaseController {
         }
 
 
-        linkAccessStatist.setIp(ipAddress);
+
+        linkAccessStatist.setIp("117.152.68.99");
 
         String userAgent = request.getHeader("User-Agent");
         if (userAgent != null && userAgent.contains("Android")) {

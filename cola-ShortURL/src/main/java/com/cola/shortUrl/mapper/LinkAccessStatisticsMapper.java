@@ -1,6 +1,8 @@
 package com.cola.shortUrl.mapper;
 
+import com.cola.common.core.domain.dto.CommonIdDto;
 import com.cola.shortUrl.domain.LinkAccessStatist;
+import com.cola.shortUrl.domain.vo.StatisticsVo;
 import com.cola.shortUrl.domain.vo.UrlStatisticsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -33,5 +35,8 @@ public interface LinkAccessStatisticsMapper {
     UrlStatisticsVo sumUp(@Param("id") Long id,@Param("userId") long userId, @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
 
     List<Map<String, Object>> selectCity(@Param("id") Long id,@Param("userId")long userId);
+
+
+    List<StatisticsVo> getStatisticsList(Long id);
 
 }

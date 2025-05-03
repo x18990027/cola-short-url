@@ -7,8 +7,7 @@
         SELECT count(*) AS ipTotal
         FROM (SELECT ip, MIN(create_time) AS createTime
               FROM link_access_statistics
-              WHERE
-                  short_link_id = #{urlId}
+              WHERE short_link_id = #{urlId}
               GROUP BY ip) AS n
     </select>
 
@@ -18,7 +17,7 @@
         DATE_FORMAT(create_time, '%H:00:00') AS createTime
         FROM link_access_statistics
         where user_by =#{userId}
-        <if test="id != null">and short_link_id =#{id} </if>
+        <if test="id != null">and short_link_id =#{id}</if>
         and create_time between #{startTime} AND #{endTime}
 
     </select>
@@ -51,7 +50,7 @@
         link_access_statistics
         WHERE
         user_by=#{userId}
-        <if test="id != null">and short_link_id =#{id} </if>
+        <if test="id != null">and short_link_id =#{id}</if>
         and create_time >= CURDATE() - INTERVAL 7 DAY
         GROUP BY
         DATE (create_time )
@@ -65,49 +64,51 @@
         SELECT '安卓' as name, count(*) as value
         FROM link_access_statistics
         WHERE terminal = 1 and user_by=#{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         UNION All
         SELECT 'iPhone' as name, count(*) as value
         FROM link_access_statistics
         WHERE terminal = 2 and user_by=#{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         UNION All
         SELECT 'Windows' as name, count(*) as value
         FROM link_access_statistics
         WHERE terminal = 3 and user_by=#{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         UNION All
         SELECT 'MacOS' as name, count(*) as value
         FROM link_access_statistics
         WHERE terminal = 4 and user_by=#{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         UNION All
         SELECT '其他' as name, count(*) as value
         FROM link_access_statistics
         WHERE terminal = 5 and user_by=#{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>;
+        <if test="id !=null ">and short_link_id =#{id}</if>;
     </select>
 
     <select id="sumUp" resultType="UrlStatisticsVo">
         SELECT *
-        FROM (SELECT COUNT(*) AS visitsTotal FROM link_access_statistics WHERE user_by = #{userId} <if test="id !=null "> and short_link_id =#{id}</if> ) AS a,
+        FROM (SELECT COUNT(*) AS visitsTotal FROM link_access_statistics WHERE user_by = #{userId} <if
+            test="id !=null ">and short_link_id =#{id}
+    </if> ) AS a,
         (SELECT count(*) AS ipTotal
         FROM (SELECT ip, MIN(create_time) AS createTime
         FROM link_access_statistics
         where user_by = #{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         GROUP BY ip) AS n) AS b,
         (SELECT COUNT(*) AS todayAddNum
         FROM link_access_statistics
         WHERE user_by = #{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         AND create_time BETWEEN #{startTime} AND #{endTime}) AS c,
         (
         SELECT count(*) AS todayAddIpNum
         FROM (SELECT ip, MIN(create_time) AS createTime
         FROM link_access_statistics
         WHERE user_by = #{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         GROUP BY ip) AS k
         WHERE createTime BETWEEN #{startTime} AND #{endTime}
         ) d
@@ -118,7 +119,7 @@
         FROM (SELECT address, COUNT(*) as num
         FROM link_access_statistics
         WHERE user_by = #{userId}
-        <if test="id !=null "> and short_link_id =#{id}</if>
+        <if test="id !=null ">and short_link_id =#{id}</if>
         GROUP BY address
         ORDER BY num desc LIMIT 10) as k
         ORDER BY num ASC
@@ -147,6 +148,36 @@
             <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
+
+
+    <select id="getStatisticsList" resultType="com.cola.shortUrl.domain.vo.StatisticsVo">
+        SELECT
+        m.id as id,
+        m.ip as ip,
+        m.address as address,
+        m.create_time AS createTime,
+        CASE
+        m.terminal
+        WHEN 1 THEN
+        '安卓'
+        WHEN 2 THEN
+        'iPhone'
+        WHEN 3 THEN
+        'windows'
+        WHEN 4 THEN
+        'Macos'
+        WHEN 5 THEN
+        '其他'
+        END AS terminal,
+        n.short_link AS shortLink
+        FROM
+        `link_access_statistics` m
+       JOIN t_short_link n ON m.short_link_id = n.id
+        <where>
+        <if test="id != null">and m.short_link_id = #{id}</if>
+        </where>
+        order  by m.create_time desc
+    </select>
 
 
 </mapper>

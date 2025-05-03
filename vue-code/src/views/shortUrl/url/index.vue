@@ -97,13 +97,7 @@
     <!-- 添加或修改链接配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <!-- <el-form-item label="短链域名" >
-        <el-select v-model="urlName" placeholder="请选择" @change="handleUrlKeyChangeSelect">
-          <el-option v-for="item in urlkeyList" :key="item.urlType" :label="item.urlName" :value="item.urlType">
-          </el-option>
-        </el-select>
-      </el-form-item>  -->
-
+   
         <el-form-item label="短链域名" prop="domainId" v-show="domainUrl">
           <el-select v-model="form.domainId" placeholder="请选择" @change="handleDomainChangeSelect">
             <el-option v-for="item in domainList" :key="item.domainId" :label="item.domainName"
@@ -154,18 +148,7 @@
               <el-input-number v-model="form.ipLimit" controls-position="right" :min="null" />
             </el-form-item>
 
-            <!-- <el-form-item label="访问密码" prop="accessPassword">
-              <el-input v-model="form.accessPassword" placeholder="请输入4位(数字字母组合)密码" />
-            </el-form-item>
-
-            <el-form-item label=" 红白拦截强开" prop="redStatus">
-              <el-switch style="margin-left: 2%;" v-model="form.redStatus" active-color="#13ce66"
-                inactive-color="#ff4949">
-              </el-switch>
-              <el-alert title="强开用于被QQ和微信拦截的链接,未被拦截请勿打开,以免影响正常使用" type="warning" :closable="false">
-              </el-alert>
-            </el-form-item> -->
-
+ 
           </el-collapse-item>
         </el-collapse>
 
@@ -241,21 +224,7 @@ export default {
 
 
 
-      domainList: [
-        {
-          domainId: 1,
-          domainName: 'm.ylb6.cn测试专用'
-        }
-        ,
-        {
-          domainId: 2,
-          domainName: 'ylm2.cn【普通跳转】'
-        },
-        {
-          domainId: 3,
-          domainName: '自定义【联系管理员】'
-        }
-      ],
+      domainList: [],
       ddomainId: 1,
       domainName: "",
       groupList: [],
