@@ -19,6 +19,7 @@ import com.cola.shortUrl.service.ShortLinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +44,17 @@ public class ShortLinkController extends BaseController {
     private ShortLinkService shortLinkService;
 
 
+    @PostMapping(value = "/getKey")
+    public AjaxResult getKey() {
+        String key = shortLinkService.getKey();
+        return AjaxResult.success(SystemStateCodeEnum.SUCCESS.getMsg(),key);
+    }
+
+
     @PreAuthorize("@ss.hasPermi('shortUrl:url:add')")
     @PostMapping(value = "/add")
     public TableDataInfo linkAdd(@Validated @RequestBody TShortLinkDto tShortLinkDto) {
+        Assert.notNull(tShortLinkDto.getUrlKey(),"短链后缀不能为空！！");
 
         String shortLink = shortLinkService.generateShortLink(tShortLinkDto);
         return getDataTable(SystemStateCodeEnum.SUCCESS, shortLink);
@@ -71,7 +80,7 @@ public class ShortLinkController extends BaseController {
     @PreAuthorize("@ss.hasPermi('shortUrl:url:update')")
     @PostMapping(value = "/update")
     public TableDataInfo updateLink(@Validated @RequestBody UpdateTShortLinkDto updateTShortLinkDto) {
-
+        updateTShortLinkDto.setUrlKey(null);
         shortLinkService.updateLink(updateTShortLinkDto);
         return getDataTable(SystemStateCodeEnum.SUCCESS);
     }

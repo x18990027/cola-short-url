@@ -49,6 +49,8 @@ public class OpenShortLinkController extends BaseController {
         }
 
 
+
+
         linkAccessStatist.setIp(ipAddress);
 
         String userAgent = request.getHeader("User-Agent");

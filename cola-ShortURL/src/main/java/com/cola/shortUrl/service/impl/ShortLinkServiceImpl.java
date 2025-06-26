@@ -160,19 +160,14 @@ public class ShortLinkServiceImpl implements ShortLinkService {
         }
 
 
-        Long timestamp = System.currentTimeMillis();
-
-        // 使用 Murmurhash算法，进行哈希，得到长链接Hash值
-        long longLinkHash = Hashing.murmur3_32().hashString(timestamp.toString(), StandardCharsets.UTF_8).padToLong();
-        String urlKey = regenerateOnHashConflict(tShortLinkDto.getLongLink(), longLinkHash);
 
         StringBuilder shortUrl = new StringBuilder();
-        shortUrl.append(domainManager.isSslStatus() ? "https://" : "http://").append(domainManager.getDomain()).append("/" + urlKey);
+        shortUrl.append(domainManager.isSslStatus() ? "https://" : "http://").append(domainManager.getDomain()).append("/" + tShortLinkDto.getUrlKey());
 
         BeanUtils.copyProperties(tShortLinkDto, tShortLink);
 
 
-        tShortLink.setUrlKey(urlKey);
+        tShortLink.setUrlKey(tShortLinkDto.getUrlKey());
         tShortLink.setShortLink(shortUrl.toString());
         tShortLink.setVisitsNum(0);
         tShortLink.setStatus(1);
@@ -386,6 +381,16 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
         List<StatisticsVo> statisticsList = linkAccessStatisticsMapper.getStatisticsList(commonIdDto);
         return statisticsList ;
+    }
+
+    @Override
+    public String getKey() {
+        Long timestamp = System.currentTimeMillis();
+
+        // 使用 Murmurhash算法，进行哈希，得到长链接Hash值
+        long longLinkHash = Hashing.murmur3_32().hashString(timestamp.toString(), StandardCharsets.UTF_8).padToLong();
+        String urlKey = regenerateOnHashConflict(UUID.randomUUID().toString(), longLinkHash);
+        return urlKey;
     }
 
 

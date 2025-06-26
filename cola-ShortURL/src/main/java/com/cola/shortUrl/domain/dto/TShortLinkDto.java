@@ -14,6 +14,8 @@ public class TShortLinkDto {
 
     private Integer domainId;
 
+    private String urlKey;
+
     private Long  numLimit;
 
     private Long  ipLimit;

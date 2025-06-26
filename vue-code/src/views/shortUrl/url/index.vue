@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column label="短网址" prop="shortLink" :show-overflow-tooltip="true" width="200"
         v-if="columns[1].visible" />
-      <el-table-column label="跳转网址" prop="longLink" :show-overflow-tooltip="true" width="200" 
+      <el-table-column label="跳转网址" prop="longLink" :show-overflow-tooltip="true" width="200"
         v-if="columns[2].visible" />
       <el-table-column label="分组" prop="groupName" width="100" v-if="columns[3].visible" />
       <el-table-column label="备注" prop="remark" width="150" v-if="columns[4].visible" />
@@ -97,11 +97,14 @@
     <!-- 添加或修改链接配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-   
+
+        <el-form-item v-show="urlKeyShow" label="短链后缀" prop="urlKey">
+          <el-input v-model="form.urlKey" placeholder="请输入短链后缀" />
+        </el-form-item>
+
         <el-form-item label="短链域名" prop="domainId" v-show="domainUrl">
           <el-select v-model="form.domainId" placeholder="请选择" @change="handleDomainChangeSelect">
-            <el-option v-for="item in domainList" :key="item.domainId" :label="item.domainName"
-              :value="item.domainId">
+            <el-option v-for="item in domainList" :key="item.domainId" :label="item.domainName" :value="item.domainId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -148,7 +151,7 @@
               <el-input-number v-model="form.ipLimit" controls-position="right" :min="null" />
             </el-form-item>
 
- 
+
           </el-collapse-item>
         </el-collapse>
 
@@ -165,9 +168,9 @@
 </template>
 
 <script>
-import { urlList, addUrl, changeStatus, updateUrl, delUrl } from "@/api/shortUrl/url";
+import { urlList, addUrl, changeStatus, updateUrl, delUrl, getKey } from "@/api/shortUrl/url";
 import { listSelect as groupList } from "@/api/shortUrl/group";
-import {getDomainAll } from "@/api/shortUrl/domain";
+import { getDomainAll } from "@/api/shortUrl/domain";
 
 
 
@@ -176,6 +179,7 @@ export default {
   dicts: ['url_status_type'],
   data() {
     return {
+      urlKeyShow: true,
       fullscreenLoading: false,
       // 遮罩层
       loading: true,
@@ -242,7 +246,10 @@ export default {
         groupId: undefined
       },
       // 表单参数
-      form: {},
+      urlKey: undefined,
+      form: {
+
+      },
       defaultProps: {
         children: "children",
         label: "label"
@@ -250,6 +257,7 @@ export default {
 
       // 表单校验
       rules: {
+     
         groupId: [
           { required: true, message: "短链分组不能为空", trigger: "blur" }
         ],
@@ -266,10 +274,17 @@ export default {
     this.getList();
     this.getgroupList();
     this.getDomainAll();
+
   },
   methods: {
 
-
+    getUrlKey() {
+      getKey().then(response => {
+        this.form.urlKey = response.data;
+        console.log(this.form.urlKey);
+        this.urlKey = response.data;
+      });
+    },
     handleDomainChangeSelect(value) {
       this.form.domainId = value; // 将选中的urlKey值赋给urlKey 
     },
@@ -311,7 +326,7 @@ export default {
     },
 
 
-   /** 查询域名列表 */
+    /** 查询域名列表 */
     getDomainAll() {
       getDomainAll().then(response => {
         this.domainList = response.rows;
@@ -361,7 +376,8 @@ export default {
           visitsNum: undefined,
           status: undefined,
           domainId: undefined,
-          remark: undefined
+          remark: undefined,
+          urlKey: undefined,
         };
       this.resetForm("form");
     },
@@ -403,12 +419,16 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.getUrlKey();
+      this.urlKeyShow = true; // 显示urlKey输入框
       this.domainUrl = true;
+
       this.open = true;
       this.title = "新增短链";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      this.urlKeyShow = false; // 隐藏urlKey输入框
       this.reset();
       const id = row.id || this.ids
       const urlListIndex = this.urlList.findIndex(item => item.id == id);

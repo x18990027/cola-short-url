@@ -37,4 +37,6 @@ public interface ShortLinkService {
     String  encodeGo( EncodeGoDto encodeGoDto);
 
    List<StatisticsVo> getStatisticsList(Long commonIdDto);
+
+   String getKey();
 }

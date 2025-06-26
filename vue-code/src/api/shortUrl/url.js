@@ -124,3 +124,13 @@ export function statisticsList(query,body)  {
     data: body
   })
 }
+
+
+
+export function getKey() {
+  return request({
+    url: '/shortUrl/url/getKey',
+    method: 'post',
+    data: null,
+  })
+}
